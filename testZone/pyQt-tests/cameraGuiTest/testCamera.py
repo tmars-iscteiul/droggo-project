@@ -5,8 +5,8 @@ from PIL import Image
 
 class Camera():
 
-	width = 640
-	height = 480
+	width = 320
+	height = 240
 	grey = np.ones((height, width, 3), np.uint8)
 	color_kernel = np.zeros((height, width,3), np.uint8)
 	cap = None
@@ -29,13 +29,13 @@ class Camera():
 		self.grey = cv2.multiply(1-self.color_kernel, self.grey/255)
 
 	
-	def startSight(self, cam):
+	def startCapture(self, cam):
 		self.cap = cv2.VideoCapture(cam)
 		self.cap.set(3,self.width)
 		self.cap.set(4,self.height)
 
 
-	def getVision(self, showVision):
+	def takeSnapshot(self):
 		
 		if (self.cap != None):
 			if (self.cap.isOpened()):
@@ -47,30 +47,37 @@ class Camera():
 					img = cv2.multiply(img_ori/255, self.color_kernel)
 					vision = cv2.add(img, self.grey)
 
-					if showVision:
-						cv2.imshow('vision',vision)
+					#visionBGR = vision[...,::-1]
+					#visionRGB = cv2.transpose(visionBGR)
 
-					if cv2.waitKey(10) & 0xFF==ord('q'):
-						self.stopVision()
-						return None, False
+					#visionRGB = cv2.cvtColor(visionBGR, cv2.COLOR_BGR2RGB)
+
+					#print(visionRGB[320,240,:])
+
+					cv2.imshow('vision',vision)
+
+					if cv2.waitKey(1) & 0xFF==ord('q'):
+						return
 
 					return vision, True
-
+				else:
+					return None, False
+			return None, False
 		return None, False
 
 
-	def stopVision(self):
+	def stopCamera(self):
 		self.cap.release()
 
 
 
 if __name__ == "__main__":
-	vision = Camera()
-	vision.startSight(0)
+	window = Camera()
+	window.startCapture(0)
 	
-	active = True
-	while active:
-		_, active = vision.getVision(True)
+	i = 0
+	while i in range(50):
+		window.takeSnapshot()
+		i = i+1
 
-	if (vision.cap.isOpened()):
-		vision.stopCamera()
+	window.stopCamera()

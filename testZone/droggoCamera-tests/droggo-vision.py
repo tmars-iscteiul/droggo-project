@@ -32,7 +32,7 @@ while (cap.isOpened()):
 
 	if ret==True:
 		t1 = datetime.now()
-
+		
 		img = cv2.multiply(img_ori/256, color_kernel)
 		vision = cv2.add(img, grey)
 
