@@ -8,17 +8,10 @@ import threading
 import time
 from PyQt5.QtCore import QThread
 
-class GuiGenerator(QThread):
+class GuiGenerator():
 
-	def __init__(self):
-		QThread.__init__(self)
-
-	def __del__(self):
-		self.wait()
-
-	def run(self):
+	def createApp(self):
 		gui = curiousStateGUI.App()
-		self.sleep(1)
 
 	def sendPackageInfo(package):
 		pass
@@ -32,7 +25,7 @@ class VisionGenerator():
 
 	def startVision(self):
 
-		self.vision.startSight(1)
+		self.vision.startSight(0)
 		self.active = True
 
 		while(self.active):
@@ -45,9 +38,9 @@ class VisionGenerator():
 			time.sleep(0.01)
 
 
-gui = GuiGenerator()
+
 vision = VisionGenerator()
+gui = GuiGenerator()
 
 visionThread = threading.Thread(target=vision.startVision(), name='visionThread').start()
-gui.start()
-#guiThread = threading.Thread(target=gui.createApp(), name='guiThread').start()
+guiThread = threading.Thread(target=gui.createApp(), name='guiThread').start()
